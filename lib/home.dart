@@ -42,7 +42,11 @@ class CounterLabel extends StatelessWidget {
               // ignore: deprecated_member_use
               style: Theme.of(context).textTheme.display1,
             ),
-            counter.showClickerOptions ? AdditionalClickerOptions() : Container(),
+            AnimatedOpacity(
+              opacity: counter.showClickerOptions ? 1 : 0,
+              duration: Duration(seconds: 1),
+              child: AdditionalClickerOptions(),
+            ),
           ],
         ),
       ),
