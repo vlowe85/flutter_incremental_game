@@ -5,11 +5,15 @@ import 'package:flutter_incremental/providers/counter.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  _MyAppState createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Counter()),
@@ -30,7 +34,22 @@ class MyApp extends StatelessWidget {
               // is not restarted.
               primarySwatch: Colors.blue,
             ),
-            home: HomePage(),
+            home: counter.progress == null
+                ? FutureBuilder<void>(
+                    future: counter.init(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<void> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.done:
+                          return HomePage();
+                        default:
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                      }
+                    },
+                  )
+                : HomePage(),
           );
         },
       ),

@@ -38,7 +38,7 @@ class CounterLabel extends StatelessWidget {
               'You have pushed the button this many times:',
             ),
             Text(
-              '${counter.count}',
+              '${counter.progress.clicks}',
               // ignore: deprecated_member_use
               style: Theme.of(context).textTheme.display1,
             ),
@@ -60,10 +60,22 @@ class AdditionalClickerOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final counter = Provider.of<Counter>(context);
     return Column(
       children: <Widget>[
+        Divider(),
+        Text(
+          '${counter.progress.count} in your wallet',
+          style: Theme.of(context).textTheme.caption,
+        ),
+        Text(
+          '${counter.progress.clicks - counter.progress.count} clicks spent on rubbish',
+          style: Theme.of(context).textTheme.caption,
+        ),
+        Divider(height: 30),
         AutoClicker(),
         AutoClickMultiplier(),
+        IncreaseSpeed(),
       ],
     );
   }
@@ -82,7 +94,7 @@ class AutoClicker extends StatelessWidget {
         Chip(
           avatar: CircleAvatar(
             backgroundColor: Colors.grey.shade800,
-            child: Text(counter.autoClickers.toString(), style: TextStyle(fontSize: 12),),
+            child: Text(counter.progress.autoClickers.toString(), style: TextStyle(fontSize: 12),),
           ),
           label: Text('Auto clickers'),
         ),
@@ -94,7 +106,7 @@ class AutoClicker extends StatelessWidget {
           ),
         ),
         OutlineButton(
-          onPressed: counter.autoClickers > 0 ? () => counter.sellAutoClicker() : null,
+          onPressed: counter.progress.autoClickers > 0 ? () => counter.sellAutoClicker() : null,
           child: Text(
               'Sell',
               style: TextStyle(fontSize: 20)
@@ -117,7 +129,7 @@ class AutoClickMultiplier extends StatelessWidget {
         Chip(
           avatar: CircleAvatar(
             backgroundColor: Colors.grey.shade800,
-            child: Text("${counter.autoClickMultiplier.toString()}x", style: TextStyle(fontSize: 12),),
+            child: Text("${counter.progress.autoClickersMultiplier.toString()}x", style: TextStyle(fontSize: 12),),
           ),
           label: Text('Click multiplier'),
         ),
@@ -129,9 +141,38 @@ class AutoClickMultiplier extends StatelessWidget {
           ),
         ),
         OutlineButton(
-          onPressed: counter.autoClickMultiplier > 1 ? () => counter.sellAutoClickMultiplier() : null,
+          onPressed: counter.progress.autoClickersMultiplier > 1 ? () => counter.sellAutoClickMultiplier() : null,
           child: Text(
               'Sell',
+              style: TextStyle(fontSize: 20)
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+class IncreaseSpeed extends StatelessWidget {
+  const IncreaseSpeed({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final counter = Provider.of<Counter>(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Chip(
+          avatar: CircleAvatar(
+            backgroundColor: Colors.grey.shade800,
+            child: Text("${counter.progress.increaseTimerPurchases.toString()}", style: TextStyle(fontSize: 12),),
+          ),
+          label: Text('Increase speed by 10%'),
+        ),
+        OutlineButton(
+          onPressed: counter.canAffordIncreaseTimer && counter.timerCanBeIncreased ? () => counter.buyIncreaseSpeed() : null,
+          child: Text(
+              'Buy for ${counter.increaseTimerCost} clicks',
               style: TextStyle(fontSize: 20)
           ),
         ),
