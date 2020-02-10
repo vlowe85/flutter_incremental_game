@@ -1,5 +1,4 @@
 # flutter_incremental_game
-=======
 
 A new Flutter project.
 
